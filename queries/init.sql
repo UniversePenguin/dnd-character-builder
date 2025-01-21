@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS characters (
+    name TEXT NOT NULL,
+    level INTEGER NOT NULL
+)
