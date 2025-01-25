@@ -12,11 +12,21 @@ let db;
     // Create a database
     db = new SQL.Database();
 
-    let sqlstr =
-        "CREATE TABLE hello (a int, b char); \
-INSERT INTO hello VALUES (0, 'hello'); \
-INSERT INTO hello VALUES (1, 'world');";
-    db.run(sqlstr);
+    const initQuery = await (await fetch("./src/queries/init.sql")).text();
 
-    console.log(db.exec("SELECT * FROM hello"));
+    db.run(initQuery);
+
+    const rulesQuery = await (
+        await fetch("./src/queries/dnd_rules.sql")
+    ).text();
+
+    db.run(rulesQuery);
+
+    const sampleQuery = await (
+        await fetch("./src/queries/samples/testing.sql")
+    ).text();
+
+    db.run(sampleQuery);
+
+    // db.run(text);
 })().then(() => console.log("done!"));
