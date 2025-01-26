@@ -36,7 +36,7 @@ CREATE TABLE character_source (
 
 CREATE TABLE stats (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL
+    name TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE modifiers (

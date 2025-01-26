@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <head>
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.12.0/sql-wasm.js"
-        integrity="sha512-tz0jOZaOg9RtWWB6AdxSkINQwIs7S5obj1Dlml9KewZLPTblTWCux5eLtnexBb8kbLUo5crPmjsi8/vI17Vw0w=="
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"
-    ></script>
+    <script src="assets/wasm/sql-wasm.js"></script>
 
+    <script src="./src/api/_linker.js"></script>
     <script src="./src/index.js"></script>
     <script src="./src/utils/database_utils.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="./assets/cs16.min.css" />
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="./assets/css/custom-cs16.css"
+    />
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="./assets/css/emily-so-stylish.css"
+    />
 </head>
-<body>
+<body style="padding: 1%">
     <div
         id="character-panel"
-        style="padding: 1%; display: flex; align-items: stretch; gap: 10px"
+        style="display: flex; gap: 10px"
+        class="display-panel"
     >
         <div id="character-selection">
             <label
@@ -66,5 +72,9 @@
         </div>
     </div>
 
-    <div id="result-location"></div>
+    <div
+        class="display-panel"
+        id="result-location"
+        style="margin-top: 10px"
+    ></div>
 </body>

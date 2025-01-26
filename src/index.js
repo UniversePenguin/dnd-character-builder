@@ -5,8 +5,7 @@ let db;
     const SQL = await initSqlJs({
         // Required to load the wasm binary asynchronously. Of course, you can host it wherever you want
         // You can omit locateFile completely when running in node
-        locateFile: (file) =>
-            `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.12.0/${file}`,
+        locateFile: (file) => `./assets/wasm/${file}`,
     });
 
     // Create a database
@@ -27,11 +26,7 @@ let db;
     await executeFile("./src/queries/rules/classes/sorcerer.sql");
 
     await executeFile("./src/queries/samples/elesyth.sql");
-})().then(() => {
-    const dropdown = document.getElementById("character-dropdown");
-
-    loadCharacter(dropdown.value);
-});
+})().then(() => loadCharacter());
 
 function loadCharacter() {
     const dropdown = document.getElementById("character-dropdown");
@@ -40,68 +35,60 @@ function loadCharacter() {
     const name = dropdown.value;
     const level = range.value;
 
-    const query = `SELECT 
-    m.id AS modifier_id,
-    m.value,
-    m.multiplier,
-    m.start_level AS modifier_start,
-    m.end_level AS modifier_end,
-    modified_stat.name AS modified_stat_name,
-    base_stat.name AS base_stat_name,
-    s.name AS source_name,
-    cs.start_level AS source_start,
-    cs.end_level AS source_end
-    FROM modifiers m
-    JOIN stats modified_stat ON m.modified_stat = modified_stat.id
-    LEFT JOIN stats base_stat ON m.base_stat = base_stat.id
-    JOIN sources s ON m.source_id = s.id
-    JOIN character_source cs ON s.id = cs.source_id
-    WHERE cs.character_id = (SELECT id FROM characters WHERE name = "${name}")
-    AND m.start_level <= ${level} AND (m.end_level IS NULL OR m.end_level >= ${level})
-    AND cs.start_level <= ${level} AND (cs.end_level IS NULL OR cs.end_level >= ${level})`;
-
-    const result = resultsToJSON(db.exec(query)[0]);
-
+    const result = get_stats(name, level);
     const loc = document.getElementById("result-location");
-
-    loc.replaceChildren(resultsToTable(result));
+    loc.replaceChildren(mapToFourColumnTable(result));
 }
 
-function resultsToTable(data) {
-    if (!Array.isArray(data) || data.length === 0) {
-        const noDataMessage = document.createElement("p");
-        noDataMessage.textContent = "No data available";
-        return noDataMessage;
-    }
-
-    // Extract the headers from the object keys
-    const headers = Object.keys(data[0]);
-
-    // Create the table element
+function mapToFourColumnTable(map) {
+    // Create a table element
     const table = document.createElement("table");
 
-    // Create the header row
+    // Create a table header with 4 columns
     const thead = document.createElement("thead");
     const headerRow = document.createElement("tr");
-    headers.forEach((header) => {
+
+    ["Key 1", "Value 1", "Key 2", "Value 2"].forEach((text) => {
         const th = document.createElement("th");
-        th.textContent = header;
+        th.textContent = text;
         headerRow.appendChild(th);
     });
+
     thead.appendChild(headerRow);
     table.appendChild(thead);
 
-    // Create the body rows
+    // Create a table body
     const tbody = document.createElement("tbody");
-    data.forEach((row) => {
-        const tr = document.createElement("tr");
-        headers.forEach((header) => {
-            const td = document.createElement("td");
-            td.textContent = row[header] ?? "";
-            tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-    });
+    const entries = Array.from(map.entries()); // Convert map to an array of [key, value] pairs
+
+    for (let i = 0; i < entries.length; i += 2) {
+        const row = document.createElement("tr");
+
+        // Get two key-value pairs for the current row
+        const pair1 = entries[i];
+        const pair2 = entries[i + 1] || ["", ""]; // Fallback to empty cells if there's no second pair
+
+        // Add the cells for the first key-value pair
+        const key1Cell = document.createElement("td");
+        key1Cell.textContent = pair1[0];
+        const value1Cell = document.createElement("td");
+        value1Cell.textContent = pair1[1];
+
+        row.appendChild(key1Cell);
+        row.appendChild(value1Cell);
+
+        // Add the cells for the second key-value pair
+        const key2Cell = document.createElement("td");
+        key2Cell.textContent = pair2[0];
+        const value2Cell = document.createElement("td");
+        value2Cell.textContent = pair2[1];
+
+        row.appendChild(key2Cell);
+        row.appendChild(value2Cell);
+
+        tbody.appendChild(row);
+    }
+
     table.appendChild(tbody);
 
     return table;
