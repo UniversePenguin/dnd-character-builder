@@ -1,3 +1,5 @@
+PRAGMA foreign_keys = ON;
+
 CREATE TABLE characters (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL
@@ -14,13 +16,15 @@ CREATE TABLE sources (
     description TEXT,
 
     type_id INTEGER NOT NULL,
+    required_source INTEGER,
 
-    FOREIGN KEY (type_id) REFERENCES source_types(id)
+    FOREIGN KEY (type_id) REFERENCES source_types(id),
+    FOREIGN KEY (required_source) REFERENCES sources(id)
 );
 
 CREATE TABLE character_source (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    start_level INTEGER NOT NULL,
+    start_level INTEGER NOT NULL DEFAULT 0,
     end_level INTEGER,
 
     character_id INTEGER NOT NULL,
@@ -37,9 +41,9 @@ CREATE TABLE stats (
 
 CREATE TABLE modifiers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    value INTEGER NOT NULL,
-    multiplier INTEGER NOT NULL,
-    start_level INTEGER NOT NULL,
+    value INTEGER NOT NULL DEFAULT 0,
+    multiplier INTEGER NOT NULL DEFAULT 1,
+    start_level INTEGER NOT NULL DEFAULT 0,
     end_level INTEGER,
 
     source_id INTEGER NOT NULL,
