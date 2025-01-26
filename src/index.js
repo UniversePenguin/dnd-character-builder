@@ -27,33 +27,50 @@ let db;
     await executeFile("./src/queries/rules/classes/sorcerer.sql");
 
     await executeFile("./src/queries/samples/elesyth.sql");
-})().then(() => console.log("done!"));
+})().then(() => {
+    const dropdown = document.getElementById("character-dropdown");
 
-function saveUint8ArrayAsFile(
-    data,
-    filename = "dnd.bin",
-    mimeType = "application/octet-stream"
-) {
-    // Create a Blob from the Uint8Array
-    const blob = new Blob([data], { type: mimeType });
+    loadCharacter(dropdown.value);
+});
 
-    // Create a temporary URL for the Blob
-    const url = URL.createObjectURL(blob);
+function loadCharacter(name) {
+    const query = `SELECT 
+    m.id AS modifier_id,
+    m.value,
+    m.multiplier,
+    m.start_level,
+    m.end_level,
+    modified_stat.name AS modified_stat_name,
+    base_stat.name AS base_stat_name,
+    s.name AS source_name
+FROM modifiers m
+JOIN stats modified_stat ON m.modified_stat = modified_stat.id
+LEFT JOIN stats base_stat ON m.base_stat = base_stat.id
+JOIN sources s ON m.source_id = s.id
+JOIN character_source cs ON s.id = cs.source_id
+WHERE cs.character_id = (SELECT id FROM characters WHERE name = "${name}") -- Replace ? with the specific character ID`;
 
-    // Create a temporary <a> element
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = filename;
+    document.body.appendChild(arrayToTable(db.exec(query)[0].values));
 
-    // Trigger the download
-    document.body.appendChild(link); // Append the link to the body
-    link.click(); // Simulate a click to trigger the download
-    document.body.removeChild(link); // Remove the link
-
-    // Revoke the URL to free up memory
-    URL.revokeObjectURL(url);
+    console.log(db.exec(query));
 }
 
-function saveDB() {
-    saveUint8ArrayAsFile(db.export());
+function arrayToTable(data) {
+    const table = document.createElement("table");
+    table.classList.add("data-table");
+
+    // Create table body
+    const tbody = document.createElement("tbody");
+    data.forEach((row) => {
+        const tr = document.createElement("tr");
+        row.forEach((cell) => {
+            const td = document.createElement("td");
+            td.textContent = cell;
+            tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+    return table;
 }
