@@ -15,13 +15,7 @@
 <body>
     <div
         id="character-panel"
-        style="
-            padding: 1%;
-            zoom: 1.5;
-            display: flex;
-            align-items: stretch;
-            gap: 10px;
-        "
+        style="padding: 1%; display: flex; align-items: stretch; gap: 10px"
     >
         <div id="character-selection">
             <label
@@ -50,18 +44,27 @@
                     <p>20</p>
                 </div>
                 <div class="ruler"></div>
-                <input id="range" type="range" min="1" max="20" value="1" />
-                <label for="range">Character Level:</label>
+                <input
+                    id="character-level-range"
+                    type="range"
+                    min="1"
+                    max="20"
+                    value="1"
+                />
+                <label for="character-level-range">Character Level:</label>
             </div>
             <span id="current-value" style="padding-left: 10px">1</span>
             <script>
-                const slider = document.getElementById("range");
+                const slider = document.getElementById("character-level-range");
                 const currentValue = document.getElementById("current-value");
 
                 slider.addEventListener("input", function () {
                     currentValue.textContent = slider.value;
+                    loadCharacter();
                 });
             </script>
         </div>
     </div>
+
+    <div id="result-location"></div>
 </body>

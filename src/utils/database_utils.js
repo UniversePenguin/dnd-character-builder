@@ -26,3 +26,15 @@ function saveUint8ArrayAsFile(
 function saveDB() {
     saveUint8ArrayAsFile(db.export());
 }
+
+function resultsToJSON(results) {
+    return results.values.map((x) => {
+        const toPush = {};
+
+        for (let i = 0; i < x.length; i++) {
+            toPush[results.columns[i]] = x[i];
+        }
+
+        return toPush;
+    });
+}

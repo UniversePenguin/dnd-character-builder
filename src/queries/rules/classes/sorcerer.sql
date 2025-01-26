@@ -5,6 +5,9 @@ INSERT INTO stats (name)
 VALUES ("Spells Known"), ("Sorcery Points");
 
 -- Sorcery points
+INSERT INTO modifiers (value, start_level, modified_stat, source_id)
+VALUES
+    (1, 2, (SELECT id FROM stats WHERE name = "Sorcery Points"), (SELECT id FROM sources WHERE name = "Sorcerer"));
 WITH 
     sorcery_points_stat_id AS (SELECT id FROM stats WHERE name = "Sorcery Points"),
     sorcerer_source_id AS (SELECT id FROM sources WHERE name = "Sorcerer")
