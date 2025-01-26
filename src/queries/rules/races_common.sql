@@ -13,4 +13,4 @@ VALUES ("Bloodline of Asmodeus", (SELECT id FROM sources WHERE name = "Tiefling"
 
 INSERT INTO modifiers (value, modified_stat, source_id)
 VALUES
-    (1, (SELECT id FROM stats WHERE name = "Intelligence Ability Score"), (SELECT id FROM source_types WHERE label = "Race"));
+    (1, (SELECT id FROM stats WHERE name = "Intelligence Ability Score"), (SELECT id FROM sources WHERE name = "Bloodline of Asmodeus"));
