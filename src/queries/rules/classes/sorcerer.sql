@@ -5,9 +5,6 @@ INSERT INTO stats (name)
 VALUES ("Spells Known"), ("Sorcery Points");
 
 -- Sorcery points
-INSERT INTO modifiers (value, start_level, modified_stat, source_id)
-VALUES
-    (1, 2, (SELECT id FROM stats WHERE name = "Sorcery Points"), (SELECT id FROM sources WHERE name = "Sorcerer"));
 WITH 
     sorcery_points_stat_id AS (SELECT id FROM stats WHERE name = "Sorcery Points"),
     sorcerer_source_id AS (SELECT id FROM sources WHERE name = "Sorcerer")
@@ -24,7 +21,11 @@ FROM (SELECT level FROM (WITH RECURSIVE
         SELECT level + 1 FROM levels WHERE level < 20
     )
     SELECT level FROM levels
-));
+))
+UNION ALL
+VALUES
+    (0, 0, (SELECT * FROM sorcery_points_stat_id), (SELECT * FROM sorcerer_source_id)),
+    (1, 2, (SELECT * FROM sorcery_points_stat_id), (SELECT * FROM sorcerer_source_id));
 
 -- Known spells
 WITH
@@ -49,3 +50,11 @@ INSERT INTO modifiers (modified_stat, base_stat, source_id)
 VALUES
     ((SELECT id FROM stats WHERE name = "Constitution Saving Throw"), (SELECT id FROM stats WHERE name = "Proficiency Bonus"), (SELECT id FROM sources WHERE name = "Sorcerer")),
     ((SELECT id FROM stats WHERE name = "Charisma Saving Throw"), (SELECT id FROM stats WHERE name = "Proficiency Bonus"), (SELECT id FROM sources WHERE name = "Sorcerer"));
+
+-- Spellcasting
+INSERT INTO modifiers (value, modified_stat, base_stat, source_id)
+VALUES
+    (8, (SELECT id FROM stats WHERE name = "Spell Save DC"), (SELECT id FROM stats WHERE name = "Proficiency Bonus"), (SELECT id FROM sources WHERE name = "Sorcerer")),
+    (0, (SELECT id FROM stats WHERE name = "Spell Save DC"), (SELECT id FROM stats WHERE name = "Charisma Modifier"), (SELECT id FROM sources WHERE name = "Sorcerer")),
+    (0, (SELECT id FROM stats WHERE name = "Spell Attack Modifier"), (SELECT id FROM stats WHERE name = "Proficiency Bonus"), (SELECT id FROM sources WHERE name = "Sorcerer")),
+    (0, (SELECT id FROM stats WHERE name = "Spell Attack Modifier"), (SELECT id FROM stats WHERE name = "Charisma Modifier"), (SELECT id FROM sources WHERE name = "Sorcerer"));

@@ -10,3 +10,7 @@
     width: fit-content;
     padding: var(--standard-pad);
 }
+
+.disabled {
+    display: none;
+}

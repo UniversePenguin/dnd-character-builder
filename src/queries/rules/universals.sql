@@ -59,7 +59,7 @@ VALUES
 INSERT INTO stats (name)
 VALUES
     ("Spell Save DC"),
-    ("Spell Attack Bonus"),
+    ("Spell Attack Modifier"),
     ("Cantrips Known"),
     ("1st Level Spell Slots"),
     ("2nd Level Spell Slots"),

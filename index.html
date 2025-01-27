@@ -36,13 +36,14 @@
                 id="character-dropdown"
                 style="padding-right: 10px"
             >
+                <option disabled selected value="">-- Select --</option>
                 <option value="Elesyth">Elesyth</option>
             </select>
         </div>
 
         <div
             id="character-level-div"
-            style="display: flex; align-items: center"
+            style="display: flex; align-items: center; gap: 10px"
         >
             <div class="cs-slider" id="character-level-slider">
                 <div class="value">
@@ -55,25 +56,45 @@
                     type="range"
                     min="1"
                     max="20"
-                    value="1"
+                    value="20"
                 />
                 <label for="character-level-range">Character Level:</label>
             </div>
-            <span id="current-value" style="padding-left: 10px">1</span>
+            <!-- <span id="current-value" style="padding-left: 10px">20</span> -->
+            <input
+                style="width: 25px"
+                class="cs-input"
+                id="current-value"
+                type="input"
+                value="20"
+            />
             <script>
                 const slider = document.getElementById("character-level-range");
                 const currentValue = document.getElementById("current-value");
 
-                slider.addEventListener("input", function () {
-                    currentValue.textContent = slider.value;
+                slider.addEventListener("input", () => {
+                    currentValue.value = slider.value;
                     loadCharacter();
+                });
+
+                currentValue.addEventListener("change", () => {
+                    slider.value = currentValue.value;
+                    loadCharacter();
+                });
+
+                const dropdown = document.getElementById("character-dropdown");
+
+                dropdown.addEventListener("change", () => {
+                    const disp = document.getElementById("result-location");
+                    loadCharacter();
+                    disp.classList.remove("disabled");
                 });
             </script>
         </div>
     </div>
 
     <div
-        class="display-panel"
+        class="display-panel disabled"
         id="result-location"
         style="margin-top: 10px"
     ></div>

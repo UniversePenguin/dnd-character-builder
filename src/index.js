@@ -17,7 +17,7 @@ let db;
         db.run(text);
     };
 
-    await executeFile("./src/queries/init.sql"); // Initialize tables
+    await executeFile("./src/queries/schema.sql"); // Initialize tables
 
     await executeFile("./src/queries/rules/universals.sql"); // Initialize D&D rules
 
@@ -26,7 +26,7 @@ let db;
     await executeFile("./src/queries/rules/classes/sorcerer.sql");
 
     await executeFile("./src/queries/samples/elesyth.sql");
-})().then(() => loadCharacter());
+})(); /*.then(() => loadCharacter());*/
 
 function loadCharacter() {
     const dropdown = document.getElementById("character-dropdown");
