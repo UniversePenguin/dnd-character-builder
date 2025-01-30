@@ -1,5 +1,5 @@
-INSERT INTO sources (name, type_id)
-VALUES ("Sorcerer", (SELECT id FROM source_types WHERE label = "Class"));
+INSERT INTO sources (name, type_id, optional_modifiers)
+VALUES ("Sorcerer", (SELECT id FROM source_types WHERE name = "Class"), 2);
 
 INSERT INTO stats (name)
 VALUES ("Spells Known"), ("Sorcery Points");
@@ -58,3 +58,9 @@ VALUES
     (0, (SELECT id FROM stats WHERE name = "Spell Save DC"), (SELECT id FROM stats WHERE name = "Charisma Modifier"), (SELECT id FROM sources WHERE name = "Sorcerer")),
     (0, (SELECT id FROM stats WHERE name = "Spell Attack Modifier"), (SELECT id FROM stats WHERE name = "Proficiency Bonus"), (SELECT id FROM sources WHERE name = "Sorcerer")),
     (0, (SELECT id FROM stats WHERE name = "Spell Attack Modifier"), (SELECT id FROM stats WHERE name = "Charisma Modifier"), (SELECT id FROM sources WHERE name = "Sorcerer"));
+
+-- Proficiencies
+INSERT INTO modifiers (modified_stat, base_stat, source_id, optional_flag)
+VALUES
+    ((SELECT id FROM stats WHERE name = "Arcana Modifier"), (SELECT id FROM stats WHERE name = "Proficiency Bonus"), (SELECT id FROM sources WHERE name = "Sorcerer"), 1),
+    ((SELECT id FROM stats WHERE name = "Deception Modifier"), (SELECT id FROM stats WHERE name = "Proficiency Bonus"), (SELECT id FROM sources WHERE name = "Sorcerer"), 1);

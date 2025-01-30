@@ -72,7 +72,7 @@ VALUES
     ("9th Level Spell Slots");
 
 -- Add all possible source types
-INSERT INTO source_types (label)
+INSERT INTO source_types (name)
 VALUES
     ("Race"),
     ("Class"),
@@ -85,10 +85,10 @@ VALUES
 -- Create sources for various intrinsic rules
 INSERT INTO sources (name, type_id)
 VALUES
-    ("Base Ability Scores", (SELECT id FROM source_types WHERE label = "Universal Rule")),
-    ("Proficiency Bonus", (SELECT id FROM source_types WHERE label = "Universal Rule")),
-    ("Ability Score Modifier Translation", (SELECT id FROM source_types WHERE label = "Universal Rule")),
-    ("Ability Modifier Bases", (SELECT id FROM source_types WHERE label = "Universal Rule"));
+    ("Base Ability Scores", (SELECT id FROM source_types WHERE name = "Universal Rule")),
+    ("Proficiency Bonus", (SELECT id FROM source_types WHERE name = "Universal Rule")),
+    ("Ability Score Modifier Translation", (SELECT id FROM source_types WHERE name = "Universal Rule")),
+    ("Ability Modifier Bases", (SELECT id FROM source_types WHERE name = "Universal Rule"));
 
 -- Add base ability scores
 INSERT INTO modifiers (value, source_id, modified_stat)
@@ -167,3 +167,28 @@ SELECT
     (SELECT id FROM stats WHERE name = base_stat),
     (SELECT * FROM ability_modifier_source_id)
 FROM modifier_mappings;
+
+-- Point buy
+INSERT INTO allocations (name, total_points, type_id)
+VALUES
+    ("Point Buy", 27, (SELECT id FROM source_types WHERE name = "Universal Rule"));
+
+INSERT INTO buyables (cost, change, stat_id, allocation_id)
+WITH 
+    point_costs(cost, change) AS (
+        VALUES
+        (1, 1), (2, 2), (3, 3), (4, 4),
+        (5, 5), (6, 7), (7, 9)
+    ),
+    modifiable_stats(modifiable_stats) AS (
+        VALUES
+        ("Strength Ability Score"), ("Dexterity Ability Score"), ("Constitution Ability Score"),
+        ("Intelligence Ability Score"), ("Wisdom Ability Score"), ("Charisma Ability Score")
+    )
+SELECT 
+    pc.cost,
+    pc.change,
+    (SELECT id FROM stats WHERE name = modifiable_stats),
+    (SELECT id FROM allocations WHERE name = "Point Buy")
+FROM point_costs pc
+RIGHT JOIN modifiable_stats ms;

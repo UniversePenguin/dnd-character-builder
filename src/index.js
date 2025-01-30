@@ -21,11 +21,12 @@ let db;
 
     await executeFile("./src/queries/rules/universals.sql"); // Initialize D&D rules
 
-    await executeFile("./src/queries/rules/races_common.sql");
+    await executeFile("./src/queries/rules/races/common/tiefling.sql");
 
     await executeFile("./src/queries/rules/classes/sorcerer.sql");
 
     await executeFile("./src/queries/samples/elesyth.sql");
+    await executeFile("./src/queries/samples/dupe.sql");
 })(); /*.then(() => loadCharacter());*/
 
 function loadCharacter() {

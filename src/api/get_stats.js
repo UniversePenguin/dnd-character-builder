@@ -1,23 +1,12 @@
 function get_stats(character_name, level) {
-    const query = `SELECT 
-    m.id AS modifier_id,
-    m.value,
-    m.multiplier,
-    m.start_level AS modifier_start,
-    m.end_level AS modifier_end,
-    modified_stat.name AS modified_stat_name,
-    base_stat.name AS base_stat_name,
-    s.name AS source_name,
-    cs.start_level AS source_start,
-    cs.end_level AS source_end
-    FROM modifiers m
-    JOIN stats modified_stat ON m.modified_stat = modified_stat.id
-    LEFT JOIN stats base_stat ON m.base_stat = base_stat.id
-    JOIN sources s ON m.source_id = s.id
-    JOIN character_source cs ON s.id = cs.source_id
-    WHERE cs.character_id = (SELECT id FROM characters WHERE name = "${character_name}")
-    AND m.start_level <= ${level} AND (m.end_level IS NULL OR m.end_level >= ${level})
-    AND cs.start_level <= ${level} AND (cs.end_level IS NULL OR cs.end_level >= ${level})`;
+    const query = `
+    SELECT * FROM full_modifier_info
+    WHERE character_name = "${character_name}"
+    AND modifier_start_level <= ${level} 
+    AND (modifier_end_level IS NULL OR modifier_end_level >= ${level})
+    AND character_source_start_level <= ${level} 
+    AND (character_source_end_level IS NULL OR character_source_end_level >= ${level})
+    AND (optional_flag = 0 OR selection_id IS NOT NULL)`;
 
     const result = resultsToJSON(db.exec(query)[0]);
 
