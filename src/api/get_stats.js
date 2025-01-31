@@ -1,6 +1,6 @@
 function get_stats(character_name, level) {
     const query = `
-    SELECT * FROM full_modifier_info
+    SELECT * FROM all_character_modifiers
     WHERE character_name = "${character_name}"
     AND modifier_start_level <= ${level} 
     AND (modifier_end_level IS NULL OR modifier_end_level >= ${level})

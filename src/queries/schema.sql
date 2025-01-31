@@ -227,3 +227,23 @@ JOIN allocations a ON a.id = ca.allocation_id
 RIGHT JOIN buyable_selections bs ON bs.ca_id = ca.id
 JOIN buyables b ON b.id = bs.buyable_id
 JOIN stats s ON s.id = b.stat_id;
+
+CREATE VIEW all_character_modifiers AS
+SELECT * FROM full_modifier_info
+UNION
+SELECT
+    b.character_allocation_id,
+    b.character_allocation_start_level,
+    b.character_allocation_end_level,
+    b.allocation_id,
+    b.allocation_name,
+    b.character_id,
+    b.character_name,
+    b.buyable_id,
+    b.buyable_change,
+    1, 0, NULL, 0,
+    b.stat_id,
+    b.stat_name,
+    NULL, NULL,
+    b.selection_id
+FROM full_buyable_info b
