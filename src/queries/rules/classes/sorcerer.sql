@@ -64,3 +64,8 @@ INSERT INTO modifiers (modified_stat, base_stat, source_id, optional_flag)
 VALUES
     ((SELECT id FROM stats WHERE name = "Arcana Modifier"), (SELECT id FROM stats WHERE name = "Proficiency Bonus"), (SELECT id FROM sources WHERE name = "Sorcerer"), 1),
     ((SELECT id FROM stats WHERE name = "Deception Modifier"), (SELECT id FROM stats WHERE name = "Proficiency Bonus"), (SELECT id FROM sources WHERE name = "Sorcerer"), 1);
+
+-- Base health
+INSERT INTO modifiers (value, modified_stat, source_id)
+VALUES
+    (6, (SELECT id FROM stats WHERE name = "Maximum HP"), (SELECT id FROM sources WHERE name = "Sorcerer"));

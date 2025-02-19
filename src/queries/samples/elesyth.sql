@@ -41,4 +41,20 @@ VALUES
     (
         (SELECT character_allocation_id FROM character_allocation_names WHERE character_name = "Elesyth" AND allocation_name = "Point Buy"),
         (SELECT buyable_id FROM buyable_names WHERE change = 7 AND allocation_name = "Point Buy" AND stat_name = "Intelligence Ability Score")
+    ),
+    (
+        (SELECT character_allocation_id FROM character_allocation_names WHERE character_name = "Elesyth" AND allocation_name = "Point Buy"),
+        (SELECT buyable_id FROM buyable_names WHERE change = 5 AND allocation_name = "Point Buy" AND stat_name = "Constitution Ability Score")
     );
+
+-- Health Selections
+-- WITH health_increase_buyables AS (
+--     SELECT 
+--         * 
+--     FROM buyables b
+--     JOIN allocations a ON a.id = b.allocation_id
+--     WHERE a.name = "Health Increases"
+-- )
+-- INSERT INTO buyable_selections (ca_id, buyable_id)
+-- VALUES
+--     ()

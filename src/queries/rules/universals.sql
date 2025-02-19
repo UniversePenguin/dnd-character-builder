@@ -119,13 +119,26 @@ VALUES
     (5, 13, 16, (SELECT id FROM sources WHERE name = "Proficiency Bonus"), (SELECT id FROM stats WHERE name = "Proficiency Bonus")),
     (6, 17, 20, (SELECT id FROM sources WHERE name = "Proficiency Bonus"), (SELECT id FROM stats WHERE name = "Proficiency Bonus"));
 
+-- Add health modifiers
+WITH RECURSIVE cnt(level) AS (
+    SELECT 1
+    UNION ALL
+    SELECT level + 1 FROM cnt WHERE level < 20
+)
+INSERT INTO modifiers (start_level, modified_stat, base_stat, source_id)
+SELECT 
+    level,
+    (SELECT id FROM stats WHERE name = "Maximum HP") AS mstat,
+    (SELECT id FROM stats WHERE name = "Constitution Modifier") AS bstat,
+    (SELECT id FROM sources WHERE name = "Ability Modifier Bases") as source
+FROM cnt;
+
 -- Add misc. modifiers
 INSERT INTO modifiers (value, modified_stat, base_stat, source_id)
 VALUES
     (0, (SELECT id FROM stats WHERE name = "Initiative"), (SELECT id FROM stats WHERE name = "Dexterity Modifier"), (SELECT id FROM sources WHERE name = "Ability Modifier Bases")),
     (0, (SELECT id FROM stats WHERE name = "Passive Perception"), (SELECT id FROM stats WHERE name = "Perception Modifier"), (SELECT id FROM sources WHERE name = "Ability Modifier Bases")),
-    (10, (SELECT id FROM stats WHERE name = "Armor Class"), (SELECT id FROM stats WHERE name = "Dexterity Modifier"), (SELECT id FROM sources WHERE name = "Ability Modifier Bases")),
-    (8, (SELECT id FROM stats WHERE name = "Maximum HP"), (SELECT id FROM stats WHERE name = "Constitution Modifier"), (SELECT id FROM sources WHERE name = "Ability Modifier Bases"));
+    (10, (SELECT id FROM stats WHERE name = "Armor Class"), (SELECT id FROM stats WHERE name = "Dexterity Modifier"), (SELECT id FROM sources WHERE name = "Ability Modifier Bases"));
 
 -- Add saving throw bases
 INSERT INTO modifiers (modified_stat, base_stat, source_id)
@@ -192,3 +205,19 @@ SELECT
     (SELECT id FROM allocations WHERE name = "Point Buy")
 FROM point_costs pc
 RIGHT JOIN modifiable_stats ms;
+
+-- Health Increases
+INSERT INTO allocations (name, type_id) VALUES
+    ("Health Increases", (SELECT id FROM source_types WHERE name = "Universal Rule"));
+
+INSERT INTO buyables (change, stat_id, allocation_id)
+WITH RECURSIVE numbers(level) AS (
+    SELECT 1
+    UNION ALL
+    SELECT level + 1 FROM numbers WHERE level < 12
+)
+SELECT
+    level,
+    (SELECT id FROM stats WHERE name = "Maximum HP"),
+    (SELECT id FROM allocations WHERE name = "Health Increases")
+FROM numbers;
